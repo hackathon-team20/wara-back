@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TopicStoreRequest;
 use App\Models\Post;
+use App\Models\Topic;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -29,7 +31,7 @@ class AdminController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function storePost(Request $request)
     {
         //投稿を作成　(実際は管理者は投稿作成できなくて良さそうだけどテスト)
         $PostData = Post::create($request->all());
@@ -38,6 +40,20 @@ class AdminController extends Controller
             [
                 'message' => 'PostData created successfully!',
                 'post' => $PostData,
+            ],
+            200
+        );
+    }
+
+    public function storeTopic(TopicStoreRequest $request)
+    {
+        //投稿を作成　(実際は管理者は投稿作成できなくて良さそうだけどテスト)
+        $TopicData = Topic::create($request->all());
+
+        return response()->json(
+            [
+                'message' => 'TopicData created successfully!',
+                'post' => $TopicData,
             ],
             200
         );
