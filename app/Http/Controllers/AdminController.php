@@ -6,6 +6,7 @@ use App\Http\Requests\TopicStoreRequest;
 use App\Models\Post;
 use App\Models\Topic;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class AdminController extends Controller
 {
@@ -28,7 +29,7 @@ class AdminController extends Controller
         ], 200);
     }
 
-    public function indexTpic()
+    public function indexTopic()
     {
         //管理者がお題を閲覧できる
         $query = Topic::query();
@@ -81,8 +82,75 @@ class AdminController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroyPost(string $id)
     {
-        //
+        //投稿の削除処理を実装
+        if (! is_numeric($id) || $id <= 0) {
+            return response()->json(
+                [
+                    'code' => Response::HTTP_BAD_REQUEST,
+                    'message' => 'Invalid ID',
+                ],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        $post = Post::find($id);
+
+        if (! $post) {
+            return response()->json(
+                [
+                    'code' => Response::HTTP_NOT_FOUND,
+                    'message' => 'Post not found',
+                ],
+                Response::HTTP_NOT_FOUND
+            );
+        }
+
+        $post->delete();
+
+        return response()->json(
+            [
+                'message' => 'Post deleted successfully!',
+                'post' => $post,
+            ],
+            200
+        );
+    }
+
+    public function destroyTopic(string $id)
+    {
+        //投稿の削除処理を実装
+        if (! is_numeric($id) || $id <= 0) {
+            return response()->json(
+                [
+                    'code' => Response::HTTP_BAD_REQUEST,
+                    'message' => 'Invalid ID',
+                ],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        $topic = Topic::find($id);
+
+        if (! $topic) {
+            return response()->json(
+                [
+                    'code' => Response::HTTP_NOT_FOUND,
+                    'message' => 'Post not found',
+                ],
+                Response::HTTP_NOT_FOUND
+            );
+        }
+
+        $topic->delete();
+
+        return response()->json(
+            [
+                'message' => 'Topic deleted successfully!',
+                'topic' => $topic,
+            ],
+            200
+        );
     }
 }
