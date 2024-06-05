@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserLoginController;
@@ -20,5 +21,7 @@ Route::prefix('admin')->middleware('auth:sanctum', 'abilities:admin')->group(fun
 });
 
 Route::prefix('user')->middleware('auth:sanctum', 'abilities:user')->group(function () {
-
+    Route::get('/posts', [UserController::class, 'index']);
+    Route::post('/posts', [UserController::class, 'store']);
+    Route::post('/posts/{id}', [UserController::class, 'destoyPost']);
 });

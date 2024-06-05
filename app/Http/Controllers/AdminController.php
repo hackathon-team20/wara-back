@@ -16,6 +16,7 @@ class AdminController extends Controller
     public function indexPost()
     {
         //管理者が投稿を閲覧できる
+        //テーブル管理できるようにページネーションで返す
         $query = Post::query();
         $result = $query->paginate(10);
 
