@@ -28,23 +28,26 @@ class AdminController extends Controller
         ], 200);
     }
 
+    public function indexTpic()
+    {
+        //管理者がお題を閲覧できる
+        $query = Topic::query();
+        $result = $query->paginate(10);
+
+        return response()->json([
+            'topics' => $result->items(),
+            'meta' => [
+                'currentPage' => $result->currentPage(),
+                'lastPage' => $result->lastPage(),
+                'total' => $result->total(),
+            ],
+        ], 200);
+    }
+
+
     /**
      * Store a newly created resource in storage.
      */
-    public function storePost(Request $request)
-    {
-        //投稿を作成　(実際は管理者は投稿作成できなくて良さそうだけどテスト)
-        $PostData = Post::create($request->all());
-
-        return response()->json(
-            [
-                'message' => 'PostData created successfully!',
-                'post' => $PostData,
-            ],
-            200
-        );
-    }
-
     public function storeTopic(TopicStoreRequest $request)
     {
         //投稿を作成　(実際は管理者は投稿作成できなくて良さそうだけどテスト)
