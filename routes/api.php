@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserLoginController;
@@ -16,6 +17,10 @@ Route::post('/admin/posts', [AdminController::class, 'storePost']);
 Route::post('/admin/topics', [AdminController::class, 'storeTopic']);
 Route::post('/admin/posts/{id}', [AdminController::class, 'destroyPost']);
 Route::post('/admin/topics/{id}', [AdminController::class, 'destroyTopic']);
+
+Route::get('/user/posts', [UserController::class, 'index']);
+Route::post('/user/posts', [UserController::class, 'store']);
+Route::post('/user/posts/{id}', [UserController::class, 'destoyPost']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
