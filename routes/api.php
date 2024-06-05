@@ -11,17 +11,17 @@ Route::post('/register', [UserRegisterController::class, 'register']);
 Route::post('/login', [UserLoginController::class, 'login']);
 Route::middleware('auth:sanctum')->post('/logout', [UserLoginController::class, 'logout']);
 
-Route::get('/admin/posts', [AdminController::class, 'indexPost']);
-Route::get('/admin/topics', [AdminController::class, 'indexTopic']);
-Route::post('/admin/posts', [AdminController::class, 'storePost']);
-Route::post('/admin/topics', [AdminController::class, 'storeTopic']);
-Route::post('/admin/posts/{id}', [AdminController::class, 'destroyPost']);
-Route::post('/admin/topics/{id}', [AdminController::class, 'destroyTopic']);
+Route::prefix('admin')->middleware('auth:sanctum', 'abilities:admin')->group(function () {
+    Route::get('/posts', [AdminController::class, 'indexPost']);
+    Route::get('/topics', [AdminController::class, 'indexTopic']);
+    Route::post('/posts', [AdminController::class, 'storePost']);
+    Route::post('/topics', [AdminController::class, 'storeTopic']);
+    Route::post('/posts/{id}', [AdminController::class, 'destroyPost']);
+    Route::post('/topics/{id}', [AdminController::class, 'destroyTopic']);
+});
 
-Route::get('/user/posts', [UserController::class, 'index']);
-Route::post('/user/posts', [UserController::class, 'store']);
-Route::post('/user/posts/{id}', [UserController::class, 'destoyPost']);
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::prefix('user')->middleware('auth:sanctum', 'abilities:user')->group(function () {
+    Route::get('/posts', [UserController::class, 'index']);
+    Route::post('/posts', [UserController::class, 'store']);
+    Route::post('/posts/{id}', [UserController::class, 'destoyPost']);
 });
