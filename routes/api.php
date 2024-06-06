@@ -8,6 +8,7 @@ use App\Http\Controllers\UserLoginController;
 use App\Http\Controllers\UserRegisterController;
 
 Route::post('/register', [UserRegisterController::class, 'register']);
+Route::post('/checkEmail', [UserRegisterController::class, 'checkEmail']);
 Route::post('/login', [UserLoginController::class, 'login']);
 Route::middleware('auth:sanctum')->post('/logout', [UserLoginController::class, 'logout']);
 
