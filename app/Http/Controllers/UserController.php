@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PostStoreRequest;
 use App\Models\Post;
 use Symfony\Component\HttpFoundation\Response;
+use App\Models\User;
 
 class UserController extends Controller
 {
@@ -82,6 +83,25 @@ class UserController extends Controller
             [
                 'message' => 'Post deleted successfully!',
                 'post' => $post,
+            ],
+            200
+        );
+    }
+    public function mypage(){
+        $userDate = User::find(auth()->id());
+
+        if (!$userDate) {
+            return response()->json(
+                [
+                    'error' => 'User not found',
+                ],
+                404
+            );
+        }
+
+        return response()->json(
+            [
+                'user' => $userDate,
             ],
             200
         );
