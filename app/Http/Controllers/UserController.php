@@ -106,4 +106,16 @@ class UserController extends Controller
             200
         );
     }
+    public function mypost(){
+        $posts = Post::where('user_id', auth()->id())
+                ->with('topic')
+                ->get();
+
+        return response()->json(
+            [
+                'my_posts' => $posts,
+            ],
+            200
+        );
+    }
 }
