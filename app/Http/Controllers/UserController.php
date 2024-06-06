@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PostStoreRequest;
 use App\Models\Post;
+use App\Models\Review;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\User;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
@@ -16,12 +18,28 @@ class UserController extends Controller
     {
         //投稿一覧を取得
         $query = Post::query();
-        $query = $query->orderBy('created_at', 'desc');
+        $query = $query->orderBy('created_at', 'desc')->with(['user'])->get();
+
+        return response()->json(
+            [
+                'post' => $query,
+            ],
+            200
+        );
     }
 
     public function ranking()
     {
         //いいね総獲得数が多い順でユーザー情報を取得
+        $query = User::query();
+        $query = $query->orderBy('created_at', 'desc')->with(['user'])->get();
+
+        return response()->json(
+            [
+                'post' => $query,
+            ],
+            200
+        );
     }
 
     /**
@@ -87,6 +105,7 @@ class UserController extends Controller
             200
         );
     }
+
     public function mypage(){
         $userDate = User::find(auth()->id());
 
@@ -106,6 +125,7 @@ class UserController extends Controller
             200
         );
     }
+  
     public function mypost(){
         $posts = Post::where('user_id', auth()->id())
                 ->with('topic')
@@ -118,4 +138,77 @@ class UserController extends Controller
             200
         );
     }
+
+    public function review(Request $request, string $id)
+    {
+        //ログイン中のユーザーが任意の投稿にハートを押した時、Reviewsテーブルにレコードを作成
+
+        if (! is_numeric($id) || $id <= 0) {
+            return response()->json(
+                [
+                    'code' => Response::HTTP_BAD_REQUEST,
+                    'message' => 'Invalid ID',
+                ],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+        //reviewメソッドの第二引数を投稿のidとして受け取って、post_idカラムにだけは個別で値を挿入
+        $reviewData = $request->all();
+        $reviewData['post_id'] = $id;
+
+        //レビューの作成
+        //作成時にログイン中のユーザーのidが、user_idカラムに挿入されるようにReviewモデルで実装済み
+        $review = Review::create($reviewData);
+
+
+        return response()->json(
+            [
+                'message' => 'postData created successfully!',
+                'review' => $review,
+            ],
+            200
+        );
+    }
+
+    public function destroyReview(string $id)
+    {
+        //レビューの削除処理
+        if (! is_numeric($id) || $id <= 0) {
+            return response()->json(
+                [
+                    'code' => Response::HTTP_BAD_REQUEST,
+                    'message' => 'Invalid ID',
+                ],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+        //ログインしているユーザーのIdを取得
+        $loginUserId = User::find(auth()->id())->id;
+      
+        $query = Review::query();
+        $review = $query
+            ->where('user_id', $loginUserId)
+                ->where('post_id', $id)->first(); //delete()を使うために１つのレコードを取得
+
+        if (! $review) {
+            return response()->json(
+                [
+                    'id' => $loginUserId,
+                    'code' => Response::HTTP_NOT_FOUND,
+                    'message' => 'Review not found',
+                ],
+                Response::HTTP_NOT_FOUND
+            );
+        }
+
+        $review->delete();
+
+        return response()->json(
+            [
+                'message' => 'Review deleted successfully!',
+                'post' => $review,
+            ]
+          );
+          
 }
+

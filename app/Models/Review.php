@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Review extends Model
 {
@@ -20,5 +21,15 @@ class Review extends Model
     protected $fillable = ['user_id', 'post_id', ];
 
     protected $dates = ['created_at', 'updated_at'];
+
+    public static function boot()
+    {
+        parent::boot();
+        
+        //ログイン中のユーザーがreviewを作成した際に、そのユーザーのidがuser_idカラムに挿入される処理
+        static::creating(function ($review) {
+            $review->user_id = Auth::id();
+        });
+    }
 
 }
