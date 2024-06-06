@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
-            $table->integer('topic_id')->constrained('topics');
+            $table->foreignId('topic_id')->constrained('topics');
             $table->foreignId('user_id')->constrained('users');
             $table->string('post_content');
             $table->timestamps();

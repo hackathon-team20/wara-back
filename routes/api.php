@@ -23,6 +23,8 @@ Route::prefix('admin')->middleware('auth:sanctum', 'abilities:admin')->group(fun
 Route::prefix('user')->middleware('auth:sanctum', 'abilities:user')->group(function () {
     Route::get('/posts', [UserController::class, 'index']);
     Route::post('/posts', [UserController::class, 'store']);
-    Route::post('/posts/{id}', [UserController::class, 'destoyPost']);
+    Route::post('/posts/{id}', [UserController::class, 'destroyPost']);
     Route::get('/mypage', [UserController::class, 'mypage']);
+    Route::post('/review/{id}', [UserController::class, 'review']);
+    Route::delete('/review/{id}', [UserController::class, 'destroyReview']);
 });

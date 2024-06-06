@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('reviews', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
-            $table->integer('post_id');
+            $table->foreignId('post_id')->constrained('posts');
             $table->timestamps();
         });
     }
