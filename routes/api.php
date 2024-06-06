@@ -26,4 +26,5 @@ Route::prefix('user')->middleware('auth:sanctum', 'abilities:user')->group(funct
     Route::post('/posts', [UserController::class, 'store']);
     Route::post('/posts/{id}', [UserController::class, 'destoyPost']);
     Route::get('/mypage', [UserController::class, 'mypage']);
+    Route::get('/mypost', [UserController::class, 'mypost']);
 });
