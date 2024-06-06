@@ -18,6 +18,7 @@ class UserController extends Controller
     {
         //投稿一覧を取得
         $query = Post::query();
+        //TODO:いいね数も一緒に返す
         $query = $query->orderBy('created_at', 'desc')->with(['user'])->get();
 
         return response()->json(
@@ -30,16 +31,7 @@ class UserController extends Controller
 
     public function ranking()
     {
-        //いいね総獲得数が多い順でユーザー情報を取得
-        $query = User::query();
-        $query = $query->orderBy('created_at', 'desc')->with(['user'])->get();
-
-        return response()->json(
-            [
-                'post' => $query,
-            ],
-            200
-        );
+        //TODO:いいね総獲得数が多い順でユーザー情報を取得、ユーザー情報といいね数も一緒に返す
     }
 
     /**
@@ -65,6 +57,37 @@ class UserController extends Controller
     public function show(string $id)
     {
         //一件の投稿の詳細情報を取得
+        if (! is_numeric($id) || $id <= 0) {
+            return response()->json(
+                [
+                    'code' => Response::HTTP_BAD_REQUEST,
+                    'message' => 'Invalid ID',
+                ],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+        $query = Post::query();
+        $post = $query->with(['user','topic'])->find($id);
+
+        if (! $post) {
+            return response()->json(
+                [
+                    'code' => Response::HTTP_NOT_FOUND,
+                    'message' => 'Post not found',
+                ],
+                Response::HTTP_NOT_FOUND
+            );
+        }
+
+        $totalReview = Review::where('post_id', $id)->count();
+
+        return response()->json(
+            [
+                'post' => $post,
+                'totalPoints' => $totalReview
+            ], 200
+        );
+
     }
 
     /**
@@ -142,7 +165,8 @@ class UserController extends Controller
     public function review(Request $request, string $id)
     {
         //ログイン中のユーザーが任意の投稿にハートを押した時、Reviewsテーブルにレコードを作成
-
+        //TODO:いいねといいね解除がフロント側のボタン切り替えなどででできるのか相談する
+        //できなかった場合はいいね解除されない限り１回までしか実行出来ないようにしないとまずそう
         if (! is_numeric($id) || $id <= 0) {
             return response()->json(
                 [
@@ -209,6 +233,6 @@ class UserController extends Controller
                 'post' => $review,
             ]
           );
-          
+    }
 }
 
