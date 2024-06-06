@@ -8,6 +8,7 @@ use App\Http\Controllers\UserLoginController;
 use App\Http\Controllers\UserRegisterController;
 
 Route::post('/register', [UserRegisterController::class, 'register']);
+Route::post('/checkEmail', [UserRegisterController::class, 'checkEmail']);
 Route::post('/login', [UserLoginController::class, 'login']);
 Route::middleware('auth:sanctum')->post('/logout', [UserLoginController::class, 'logout']);
 
@@ -25,6 +26,7 @@ Route::prefix('user')->middleware('auth:sanctum', 'abilities:user')->group(funct
     Route::post('/posts', [UserController::class, 'store']);
     Route::post('/posts/{id}', [UserController::class, 'destroyPost']);
     Route::get('/mypage', [UserController::class, 'mypage']);
+    Route::get('/mypost', [UserController::class, 'mypost']);
     Route::post('/review/{id}', [UserController::class, 'review']);
     Route::delete('/review/{id}', [UserController::class, 'destroyReview']);
 });

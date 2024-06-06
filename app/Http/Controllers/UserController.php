@@ -125,6 +125,19 @@ class UserController extends Controller
             200
         );
     }
+  
+    public function mypost(){
+        $posts = Post::where('user_id', auth()->id())
+                ->with('topic')
+                ->get();
+
+        return response()->json(
+            [
+                'my_posts' => $posts,
+            ],
+            200
+        );
+    }
 
     public function review(Request $request, string $id)
     {
@@ -169,8 +182,9 @@ class UserController extends Controller
                 Response::HTTP_BAD_REQUEST
             );
         }
-
+        //ログインしているユーザーのIdを取得
         $loginUserId = User::find(auth()->id())->id;
+      
         $query = Review::query();
         $review = $query
             ->where('user_id', $loginUserId)
@@ -193,8 +207,8 @@ class UserController extends Controller
             [
                 'message' => 'Review deleted successfully!',
                 'post' => $review,
-            ],
-            200
-        );
-    }
+            ]
+          );
+          
 }
+
