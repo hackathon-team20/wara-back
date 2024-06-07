@@ -25,11 +25,11 @@ class Post extends Model
     }
 
     //Eloquentモデルのカスタムアクセサを利用し、Postモデルに属性を追加
-    protected $appends = ['total_reviews'];
+    protected $appends = ['total_hearts'];
 
     //Postを取得した際のjsonレスポンスにそのPostについたReview総数も一緒に返す
     //このメソッド命名は重要。getで始まり最後にAttributeをつける。間には追加した属性名のキャメルケース
-    public function getTotalReviewsAttribute() 
+    public function getTotalHeartsAttribute() 
     {
         return $this->reviews()->count();
     }
