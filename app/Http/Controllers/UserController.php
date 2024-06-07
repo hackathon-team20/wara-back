@@ -8,6 +8,7 @@ use App\Models\Review;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -31,6 +32,19 @@ class UserController extends Controller
     public function ranking()
     {
         //TODO:いいね総獲得数が多い順でユーザー情報を取得、ユーザー情報といいね数も一緒に返す
+        $users = User::select('users.*', DB::raw('COUNT(reviews.id) as user_total_hearts'))
+            ->leftJoin('posts', 'posts.user_id', '=', 'users.id')
+            ->leftJoin('reviews', 'reviews.post_id', '=', 'posts.id')
+            ->groupBy('users.id')
+            ->orderBy('user_total_hearts', 'desc')
+            ->get();
+
+            return response()->json(
+                [
+                    'users' => $users,
+                ],
+                200
+            );
     }
 
     /**
