@@ -18,7 +18,6 @@ class UserController extends Controller
     {
         //投稿一覧を取得
         $query = Post::query();
-        //TODO:いいね数も一緒に返す
         $query = $query->orderBy('created_at', 'desc')->with(['user'])->get();
 
         return response()->json(
@@ -79,12 +78,9 @@ class UserController extends Controller
             );
         }
 
-        $totalReview = Review::where('post_id', $id)->count();
-
         return response()->json(
             [
                 'post' => $post,
-                'totalPoints' => $totalReview
             ], 200
         );
 
