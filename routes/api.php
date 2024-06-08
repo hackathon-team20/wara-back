@@ -32,7 +32,7 @@ Route::prefix('user')->middleware('auth:sanctum', 'abilities:user')->group(funct
     Route::post('/review/{id}', [UserController::class, 'review']);
     Route::delete('/review/{id}', [UserController::class, 'destroyReview']);
 
-    Route::get('/user/users', [UserController::class, 'ranking'])
+    Route::get('/user/users', [UserController::class, 'ranking']);
     Route::get('/otheruser',[UserController::class, 'otheruser']);
     Route::get('/otheruserposts', [UserController::class, 'otheruserPosts']);
 });
