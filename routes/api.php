@@ -20,6 +20,7 @@ Route::prefix('admin')->middleware('auth:sanctum', 'abilities:admin')->group(fun
     Route::post('/topics', [AdminController::class, 'storeTopic']);
     Route::post('/posts/{id}', [AdminController::class, 'destroyPost']);
     Route::post('/topics/{id}', [AdminController::class, 'destroyTopic']);
+    Route::get('/topics/{id}', [AdminController::class, 'showTopic']);
     Route::post('/mail', [MailController::class, 'mail']);
 });
 

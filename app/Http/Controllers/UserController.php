@@ -331,5 +331,21 @@ class UserController extends Controller
         'post_created_at' =>  $post->created_at
     ], 200);
     }
+
+    public function showTopic(string $id)
+    {
+        // 指定されたトピックIDに基づいて投稿を取得
+        $posts = Post::where('topic_id', $id)
+            ->with('topic')
+            ->get();
+
+        // 投稿情報を JSON レスポンスとして返す
+        return response()->json(
+            [
+                'posts' => $posts,
+            ],
+            200
+        );
+    }
 }
 
