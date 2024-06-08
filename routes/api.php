@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserLoginController;
 use App\Http\Controllers\UserRegisterController;
+use App\Http\Controllers\MailController;
 
 Route::post('/register', [UserRegisterController::class, 'register']);
 Route::post('/checkEmail', [UserRegisterController::class, 'checkEmail']);
@@ -19,6 +20,7 @@ Route::prefix('admin')->middleware('auth:sanctum', 'abilities:admin')->group(fun
     Route::post('/topics', [AdminController::class, 'storeTopic']);
     Route::post('/posts/{id}', [AdminController::class, 'destroyPost']);
     Route::post('/topics/{id}', [AdminController::class, 'destroyTopic']);
+    Route::post('/mail', [MailController::class, 'mail']);
 });
 
 Route::prefix('user')->middleware('auth:sanctum', 'abilities:user')->group(function () {
