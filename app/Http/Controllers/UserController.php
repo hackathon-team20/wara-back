@@ -158,7 +158,7 @@ class UserController extends Controller
             200
         );
     }
-  
+
     public function mypost(){
         $posts = Post::where('user_id', auth()->id())
                 ->with('topic')
@@ -218,7 +218,7 @@ class UserController extends Controller
         }
         //ログインしているユーザーのIdを取得
         $loginUserId = User::find(auth()->id())->id;
-      
+
         $query = Review::query();
         $review = $query
             ->where('user_id', $loginUserId)
@@ -242,7 +242,47 @@ class UserController extends Controller
                 'message' => 'Review deleted successfully!',
                 'post' => $review,
             ]
-          );
+        );
+    }
+
+    public function otheruser(Request $request){
+        $userId = $request->user_id;
+        
+        // userId に基づいてユーザー情報を取得
+        $user = User::find($userId);
+
+        // ユーザーが存在しない場合のエラーハンドリング（念のため）
+        if (!$user) {
+            return response()->json([
+                'error' => 'User not found',
+            ], 404);
+        }
+
+        return response()->json(
+            [
+                'other_user' => $user
+            ],
+            200
+        );
+    }
+
+    public function otheruserPosts(Request $request)
+    {
+        // user_id をリクエストから取得
+        $userId = $request->user_id;
+
+        // 指定されたユーザーIDに基づいて投稿を取得
+        $posts = Post::where('user_id', $userId)
+            ->with('topic')
+            ->get();
+
+        // 投稿情報を JSON レスポンスとして返す
+        return response()->json(
+            [
+                'other_user_posts' => $posts,
+            ],
+            200
+        );
     }
 }
 
