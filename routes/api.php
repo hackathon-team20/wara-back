@@ -23,7 +23,7 @@ Route::prefix('admin')->middleware('auth:sanctum', 'abilities:admin')->group(fun
     Route::post('/mail', [MailController::class, 'mail']);
 });
 
- Route::prefix('user')->middleware('auth:sanctum', 'abilities:user')->group(function () {
+Route::prefix('user')->middleware('auth:sanctum', 'abilities:user')->group(function () {
     Route::get('/posts', [UserController::class, 'indexPosts']);
     Route::get('/posts/{id}', [UserController::class, 'show']);
     Route::post('/posts/{id}', [UserController::class, 'store']);
@@ -36,4 +36,5 @@ Route::prefix('admin')->middleware('auth:sanctum', 'abilities:admin')->group(fun
     Route::get('/user/users', [UserController::class, 'ranking']);
     Route::get('/otherUser/{id}',[UserController::class, 'otheruser']);
     Route::get('/otherUserPosts/{id}', [UserController::class, 'otheruserPosts']);
+    Route::get('/posts/recent', [UserController::class, 'recent']);
 });
