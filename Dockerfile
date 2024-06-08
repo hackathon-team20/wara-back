@@ -37,6 +37,9 @@ WORKDIR /var/www/html
 RUN composer install --no-dev --optimize-autoloader
 
 
+# Laravelアプリケーションのソースコードをコピー
+COPY .env.example /var/www/html/.env
+
 # Laravelアプリケーションキーの生成
 RUN php artisan key:generate
 
@@ -45,9 +48,6 @@ RUN php artisan config:cache \
     && php artisan route:cache \
     && php artisan view:cache \
     && php artisan config:clear
-
-# Laravelアプリケーションのソースコードをコピー
-COPY .env.example /var/www/html/.env
 
 # Apacheをフォアグラウンドで実行
 CMD ["apache2-foreground"]
