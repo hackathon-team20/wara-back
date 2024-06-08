@@ -5,8 +5,6 @@ services:
     dockerfilePath: ./Dockerfile
     healthCheckPath: /
     envVars:
-      - key: APP_KEY
-        value: base64:NGgChGstC66RJ1DNoLqwftwhFzCGUUwrtxjRZVzMvXw=
       - key: APP_ENV
         value: production
       - key: DB_CONNECTION

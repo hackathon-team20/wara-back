@@ -36,7 +36,8 @@ RUN composer install --no-dev --optimize-autoloader
 # キャッシュのクリアと設定ファイルのキャッシュ化
 RUN php artisan config:cache \
     && php artisan route:cache \
-    && php artisan view:cache
+    && php artisan view:cache \
+    && php artisan key:generate
 
 # Apacheをフォアグラウンドで実行
 CMD ["apache2-foreground"]
