@@ -1,41 +1,42 @@
 # ベースイメージとしてPHPの公式イメージを使用
-FROM php:8.3.7-apache
+FROM php:8.3-apache
 
-# 必要なPHP拡張機能をインストール
+# 必要なPHP拡張モジュールをインストール
 RUN apt-get update && apt-get install -y \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
     libzip-dev \
+    zip \
     unzip \
-    libpq-dev \
-    && docker-php-ext-install zip pdo pdo_pgsql
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install gd \
+    && docker-php-ext-install pdo_mysql zip
 
-# ApacheのドキュメントルートをLaravelのpublicディレクトリに変更
-ENV APACHE_DOCUMENT_ROOT /var/www/public
+# Composerのインストール
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Apacheの設定ファイルを変更してドキュメントルートを設定
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+# Laravelアプリケーションのソースコードをコピー
+COPY . /var/www/html
 
-# 作業ディレクトリの設定
-WORKDIR /var/www
+# Apache設定ファイルのコピー
+COPY ./apache/000-default.conf /etc/apache2/sites-available/000-default.conf
 
-# Composerをインストール
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
-# Laravelプロジェクトの依存関係をインストール
-COPY composer.json composer.lock ./
-RUN composer install --no-scripts --no-autoloader
-
-# アプリケーションのソースコードをコピー
-COPY . .
-
-# 依存関係を再度インストール
-RUN composer dump-autoload
-
-# Apacheモジュールを有効にする
+# Apacheモジュールの有効化
 RUN a2enmod rewrite
 
-# ポートの公開
-EXPOSE 80
+# 権限の設定
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html
 
-# Apacheをフォアグラウンドで起動
-# CMD ["apache2-foreground"]
+# Laravelの依存関係をインストール
+WORKDIR /var/www/html
+RUN composer install --no-dev --optimize-autoloader
+
+# キャッシュのクリアと設定ファイルのキャッシュ化
+RUN php artisan config:cache \
+    && php artisan route:cache \
+    && php artisan view:cache
+
+# Apacheをフォアグラウンドで実行
+CMD ["apache2-foreground"]
