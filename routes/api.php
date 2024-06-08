@@ -21,19 +21,17 @@ Route::prefix('admin')->middleware('auth:sanctum', 'abilities:admin')->group(fun
     Route::post('/topics/{id}', [AdminController::class, 'destroyTopic']);
 });
 
-Route::prefix('user')->middleware('auth:sanctum', 'abilities:user')->group(function () {
-    Route::get('/posts', [UserController::class, 'index']);
+ Route::prefix('user')->middleware('auth:sanctum', 'abilities:user')->group(function () {
+    Route::get('/posts', [UserController::class, 'indexPosts']);
     Route::get('/posts/{id}', [UserController::class, 'show']);
-    Route::post('/posts', [UserController::class, 'store']);
+    Route::post('/posts/{id}', [UserController::class, 'store']);
     Route::post('/posts/{id}', [UserController::class, 'destroyPost']);
     Route::get('/mypage', [UserController::class, 'mypage']);
     Route::get('/mypost', [UserController::class, 'mypost']);
-    //Route::get('/users', [UserController::class, 'ranking']);
+    Route::get('/users', [UserController::class, 'ranking']);
     Route::post('/review/{id}', [UserController::class, 'review']);
     Route::delete('/review/{id}', [UserController::class, 'destroyReview']);
-
-    Route::get('/user/users', [UserController::class, 'ranking'])
-    Route::get('/otheruser',[UserController::class, 'otheruser']);
-    Route::get('/otheruserposts', [UserController::class, 'otheruserPosts']);
+    Route::get('/user/users', [UserController::class, 'ranking']);
+    Route::get('/otherUser/{id}',[UserController::class, 'otheruser']);
+    Route::get('/otherUserPosts/{id}', [UserController::class, 'otheruserPosts']);
 });
-

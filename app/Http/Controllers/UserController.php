@@ -15,7 +15,7 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function indexPosts()
     {
         //投稿一覧を取得
         $query = Post::query();
@@ -50,10 +50,15 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(PostStoreRequest $request)
+    public function store(PostStoreRequest $request, string $id)
     {
-        //投稿を作成　(実際は管理者は投稿作成できなくて良さそうだけどテスト)
-        $postData = Post::create($request->all());
+        //投稿を作成
+        $data = $request->all();
+
+        $data['topic_id'] = $id;
+        $data['user_id'] = auth()->id();
+
+        $postData = Post::create($data);
 
         return response()->json(
             [
@@ -166,7 +171,7 @@ class UserController extends Controller
 
         return response()->json(
             [
-                'my_posts' => $posts,
+                'posts' => $posts,
             ],
             200
         );
@@ -197,7 +202,7 @@ class UserController extends Controller
 
         return response()->json(
             [
-                'message' => 'postData created successfully!',
+                'message' => 'Review created successfully!',
                 'review' => $review,
             ],
             200
@@ -240,16 +245,14 @@ class UserController extends Controller
         return response()->json(
             [
                 'message' => 'Review deleted successfully!',
-                'post' => $review,
+                'review' => $review,
             ]
         );
     }
 
-    public function otheruser(Request $request){
-        $userId = $request->user_id;
-        
+    public function otheruser(string $id){
         // userId に基づいてユーザー情報を取得
-        $user = User::find($userId);
+        $user = User::find($id);
 
         // ユーザーが存在しない場合のエラーハンドリング（念のため）
         if (!$user) {
@@ -260,26 +263,23 @@ class UserController extends Controller
 
         return response()->json(
             [
-                'other_user' => $user
+                'user' => $user
             ],
             200
         );
     }
 
-    public function otheruserPosts(Request $request)
+    public function otheruserPosts(string $id)
     {
-        // user_id をリクエストから取得
-        $userId = $request->user_id;
-
         // 指定されたユーザーIDに基づいて投稿を取得
-        $posts = Post::where('user_id', $userId)
+        $posts = Post::where('user_id', $id)
             ->with('topic')
             ->get();
 
         // 投稿情報を JSON レスポンスとして返す
         return response()->json(
             [
-                'other_user_posts' => $posts,
+                'posts' => $posts,
             ],
             200
         );
