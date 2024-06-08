@@ -9,9 +9,11 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     zip \
     unzip \
+    libpq-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd \
-    && docker-php-ext-install pgsql pdo_pgsql zip
+    && docker-php-ext-install pgsql pdo_pgsql zip 
+
 
 # Composerのインストール
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
