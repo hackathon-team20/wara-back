@@ -7,6 +7,7 @@ use App\Models\Post;
 use App\Models\Review;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\User;
+use App\Models\Topic;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -283,6 +284,41 @@ class UserController extends Controller
             ],
             200
         );
+    }
+    public function recent()
+    {
+    // ログイン中のユーザー情報を取得
+    $user = auth()->user();
+
+    // 最新のトピックを取得
+    $topic = Topic::orderBy('created_at', 'desc')->first();
+
+    // ユーザーが最新のトピックに対して投稿しているかを確認
+    $post = Post::where('topic_id',$topic->id)
+        ->where('user_id', $user->id)
+        ->first();
+
+    // レスポンスを返す
+    if (!$post) {
+        return response()->json([
+            'topic_id' => $topic->id,
+            'topic' => $topic->topic,
+            'topic_created_at' => $topic->created_at,
+            'post_id' => null,
+            'post_content' => null,
+            'post_created_at' =>  null
+        ], 200);
+    }
+
+    // ユーザーが最新のトピックに対して投稿している場合、トピックと投稿内容を返す
+    return response()->json([
+        'topic_id' => $topic->id,
+        'topic' => $topic->topic,
+        'topic_created_at' => $topic->created_at,
+        'post_id' => $post->id,
+        'post_content' => $post->post_content,
+        'post_created_at' =>  $post->created_at
+    ], 200);
     }
 }
 
