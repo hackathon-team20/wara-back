@@ -299,14 +299,14 @@ class UserController extends Controller
     public function recent()
     {
     // ログイン中のユーザー情報を取得
-    $user = auth()->user();
+    $userId = auth()->id();
 
     // 最新のトピックを取得
     $topic = Topic::orderBy('created_at', 'desc')->first();
 
     // ユーザーが最新のトピックに対して投稿しているかを確認
     $post = Post::where('topic_id',$topic->id)
-        ->where('user_id', $user->id)
+        ->where('user_id', $userId)
         ->first();
 
     // レスポンスを返す
