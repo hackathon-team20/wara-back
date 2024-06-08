@@ -36,7 +36,6 @@ RUN chown -R www-data:www-data /var/www/html \
 WORKDIR /var/www/html
 RUN composer install --no-dev --optimize-autoloader
 
-RUN php artisan config:clear
 
 # Laravelアプリケーションキーの生成
 RUN php artisan key:generate
@@ -44,7 +43,8 @@ RUN php artisan key:generate
 # Laravelの設定ファイルのキャッシュ化
 RUN php artisan config:cache \
     && php artisan route:cache \
-    && php artisan view:cache
+    && php artisan view:cache \
+    && php artisan config:clear
 
 # Laravelアプリケーションのソースコードをコピー
 COPY .env.example /var/www/html/.env
