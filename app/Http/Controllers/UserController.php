@@ -15,7 +15,7 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function indexPosts()
     {
         //投稿一覧を取得
         $query = Post::query();
@@ -50,10 +50,15 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(PostStoreRequest $request)
+    public function store(PostStoreRequest $request, string $id)
     {
-        //投稿を作成　(実際は管理者は投稿作成できなくて良さそうだけどテスト)
-        $postData = Post::create($request->all());
+        //投稿を作成
+        $data = $request->all();
+
+        $data['topic_id'] = $id;
+        $data['user_id'] = auth()->id();
+
+        $postData = Post::create($data);
 
         return response()->json(
             [
@@ -158,7 +163,7 @@ class UserController extends Controller
             200
         );
     }
-  
+
     public function mypost(){
         $posts = Post::where('user_id', auth()->id())
                 ->with('topic')
@@ -166,7 +171,7 @@ class UserController extends Controller
 
         return response()->json(
             [
-                'my_posts' => $posts,
+                'posts' => $posts,
             ],
             200
         );
@@ -197,7 +202,7 @@ class UserController extends Controller
 
         return response()->json(
             [
-                'message' => 'postData created successfully!',
+                'message' => 'Review created successfully!',
                 'review' => $review,
             ],
             200
@@ -218,7 +223,7 @@ class UserController extends Controller
         }
         //ログインしているユーザーのIdを取得
         $loginUserId = User::find(auth()->id())->id;
-      
+
         $query = Review::query();
         $review = $query
             ->where('user_id', $loginUserId)
@@ -240,9 +245,44 @@ class UserController extends Controller
         return response()->json(
             [
                 'message' => 'Review deleted successfully!',
-                'post' => $review,
+                'review' => $review,
             ]
-          );
+        );
+    }
+
+    public function otheruser(string $id){
+        // userId に基づいてユーザー情報を取得
+        $user = User::find($id);
+
+        // ユーザーが存在しない場合のエラーハンドリング（念のため）
+        if (!$user) {
+            return response()->json([
+                'error' => 'User not found',
+            ], 404);
+        }
+
+        return response()->json(
+            [
+                'user' => $user
+            ],
+            200
+        );
+    }
+
+    public function otheruserPosts(string $id)
+    {
+        // 指定されたユーザーIDに基づいて投稿を取得
+        $posts = Post::where('user_id', $id)
+            ->with('topic')
+            ->get();
+
+        // 投稿情報を JSON レスポンスとして返す
+        return response()->json(
+            [
+                'posts' => $posts,
+            ],
+            200
+        );
     }
 }
 
