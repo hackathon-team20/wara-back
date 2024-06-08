@@ -20,7 +20,8 @@ class UserRegisterController extends Controller
             'password' => bcrypt($request->password)
         ]);
 
-        return response()->json(['user' => $user], 201);
+        $token = $user->createToken('user_token',['user'])->plainTextToken;
+        return response()->json(['user' => $user, 'token' => $token], 201);
     }
 
     public function checkEmail(Request $request)
