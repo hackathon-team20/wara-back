@@ -1,12 +1,12 @@
 services:
   - type: web
     name: wara-back
-    env: docker
+    runtime: docker
     dockerfilePath: ./Dockerfile
     healthCheckPath: /
     envVars:
       - key: APP_KEY
-        value:
+        value: base64:NGgChGstC66RJ1DNoLqwftwhFzCGUUwrtxjRZVzMvXw=
       - key: APP_ENV
         value: production
       - key: DB_CONNECTION
