@@ -42,7 +42,7 @@ RUN php artisan config:cache \
     && php artisan view:cache
 
 # Laravelアプリケーションのソースコードをコピー
-COPY .env /var/www/html/.env
+COPY .env.example /var/www/html/.env
 
 # Laravelアプリケーションキーの生成
 RUN php artisan key:generate
