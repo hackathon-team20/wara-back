@@ -31,13 +31,16 @@ RUN chown -R www-data:www-data /var/www/html \
 
 # Laravelの依存関係をインストール
 WORKDIR /var/www/html
-RUN composer install --no-dev --optimize-autoloader
 
-# キャッシュのクリアと設定ファイルのキャッシュ化
+# キャッシュのクリア
+RUN php artisan config:clear
+
+# Laravelの設定ファイルのキャッシュ化
 RUN php artisan config:cache \
     && php artisan route:cache \
     && php artisan view:cache
 
+# Laravelアプリケーションキーの生成
 RUN php artisan key:generate
 
 # Apacheをフォアグラウンドで実行
