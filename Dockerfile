@@ -22,6 +22,9 @@ COPY . /var/www/html
 # Apache設定ファイルのコピー
 COPY ./apache/000-default.conf /etc/apache2/sites-available/000-default.conf
 
+# ServerNameをグローバルに設定
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+
 # Apacheモジュールの有効化
 RUN a2enmod rewrite
 
@@ -31,11 +34,7 @@ RUN chown -R www-data:www-data /var/www/html \
 
 # Laravelの依存関係をインストール
 WORKDIR /var/www/html
-RUN composer install --no-dev --optimize-autoloader \
-    && php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache \
-    && php artisan key:generate
+
 
 # Laravelの設定ファイルのキャッシュ化
 RUN php artisan config:cache \
