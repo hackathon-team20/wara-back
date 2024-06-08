@@ -32,8 +32,6 @@ RUN chown -R www-data:www-data /var/www/html \
 # Laravelの依存関係をインストール
 WORKDIR /var/www/html
 
-# キャッシュのクリア
-RUN php artisan config:clear
 
 # Laravelの設定ファイルのキャッシュ化
 RUN php artisan config:cache \
