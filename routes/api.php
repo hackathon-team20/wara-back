@@ -36,5 +36,5 @@ Route::prefix('user')->middleware('auth:sanctum', 'abilities:user')->group(funct
     Route::get('/user/users', [UserController::class, 'ranking']);
     Route::get('/otherUser/{id}',[UserController::class, 'otheruser']);
     Route::get('/otherUserPosts/{id}', [UserController::class, 'otheruserPosts']);
-    Route::get('/posts/recent', [UserController::class, 'recent']);
+    Route::get('/recent', [UserController::class, 'recent']);
 });
