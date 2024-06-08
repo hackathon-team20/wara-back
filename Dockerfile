@@ -36,6 +36,8 @@ RUN chown -R www-data:www-data /var/www/html \
 WORKDIR /var/www/html
 RUN composer install --no-dev --optimize-autoloader
 
+RUN php artisan config:clear
+
 # Laravelアプリケーションキーの生成
 RUN php artisan key:generate
 
