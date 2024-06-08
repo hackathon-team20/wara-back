@@ -25,7 +25,7 @@ Route::prefix('admin')->middleware('auth:sanctum', 'abilities:admin')->group(fun
     Route::get('/posts', [UserController::class, 'indexPosts']);
     Route::get('/posts/{id}', [UserController::class, 'show']);
     Route::post('/posts/{id}', [UserController::class, 'store']);
-    Route::post('/posts/{id}', [UserController::class, 'destroyPost']);
+    Route::delete('/posts/{id}', [UserController::class, 'destroyPost']);
     Route::get('/mypage', [UserController::class, 'mypage']);
     Route::get('/mypost', [UserController::class, 'mypost']);
     Route::get('/users', [UserController::class, 'ranking']);
