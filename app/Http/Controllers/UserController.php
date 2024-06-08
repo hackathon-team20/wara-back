@@ -18,9 +18,20 @@ class UserController extends Controller
      */
     public function indexPosts()
     {
+        //ログイン中のユーザーを取得
+        $userId = auth()->id();
         //投稿一覧を取得
         $query = Post::query();
-        $query = $query->orderBy('created_at', 'desc')->with(['user'])->get();
+        $query = $query->with(['user', 'reviews'])
+            ->orderBy('created_at', 'desc')
+                ->get();
+
+        //各投稿に対してログインユーザーがレビューをつけているかを確認
+        $query->each(function ($query) use ($userId) {
+        $query->isReviewedByUser = $query->reviews->where('user_id', $userId)->isNotEmpty();
+        //reviewsコレクションをメモリから解放する
+        unset($query->reviews);
+    });
 
         return response()->json(
             [
