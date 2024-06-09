@@ -20,22 +20,26 @@ class UserController extends Controller
     {
         //ログイン中のユーザーを取得
         $userId = auth()->id();
-        //投稿一覧を取得
-        $query = Post::query();
-        $query = $query->with(['user', 'reviews'])
-            ->orderBy('created_at', 'desc')
-                ->get();
 
-        //各投稿に対してログインユーザーがレビューをつけているかを確認
-        $query->each(function ($query) use ($userId) {
-        $query->isReviewedByUser = $query->reviews->where('user_id', $userId)->isNotEmpty();
-        //reviewsコレクションをメモリから解放する
-        unset($query->reviews);
-    });
+        // 最新のトピックを取得
+        $topic = Topic::orderBy('created_at', 'desc')->first();
+
+        // 最新のトピックに紐づく投稿一覧を取得
+        $posts = Post::where('topic_id', $topic->id)
+        ->with(['user', 'reviews'])
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+        // 各投稿に対してログインユーザーがレビューをつけているかを確認
+        $posts->each(function ($post) use ($userId) {
+            $post->isReviewedByUser = $post->reviews->where('user_id', $userId)->isNotEmpty();
+            // reviewsコレクションをメモリから解放する
+            unset($post->reviews);
+        });
 
         return response()->json(
             [
-                'post' => $query,
+                'posts' => $posts,
             ],
             200
         );
