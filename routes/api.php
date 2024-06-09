@@ -38,4 +38,5 @@ Route::prefix('user')->middleware('auth:sanctum', 'abilities:user')->group(funct
     Route::get('/otherUser/{id}',[UserController::class, 'otheruser']);
     Route::get('/otherUserPosts/{id}', [UserController::class, 'otheruserPosts']);
     Route::get('/recent', [UserController::class, 'recent']);
+    Route::get('/topics/{id}', [UserController::class, 'showTopic']);
 });
