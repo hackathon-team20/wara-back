@@ -157,20 +157,19 @@ class UserController extends Controller
     }
 
     public function mypage(){
-        $userDate = User::find(auth()->id());
-
-        if (!$userDate) {
-            return response()->json(
-                [
-                    'error' => 'User not found',
-                ],
-                404
-            );
+        // userId に基づいてユーザー情報を取得、同時に投稿とトピックも取得
+        $user = User::with(['posts.topic'])->find(auth()->id());
+    
+        // ユーザーが存在しない場合のエラーハンドリング（念のため）
+        if (!$user) {
+            return response()->json([
+                'error' => 'User not found',
+            ], 404);
         }
-
+    
         return response()->json(
             [
-                'user' => $userDate,
+                'user' => $user,
             ],
             200
         );
@@ -262,25 +261,25 @@ class UserController extends Controller
         );
     }
 
-    public function otheruser(string $id){
-        // userId に基づいてユーザー情報を取得
-        $user = User::find($id);
-
+    public function otheruser(string $id)
+    {
+        // userId に基づいてユーザー情報を取得、同時に投稿とトピックも取得
+        $user = User::with(['posts.topic'])->find($id);
+    
         // ユーザーが存在しない場合のエラーハンドリング（念のため）
         if (!$user) {
             return response()->json([
                 'error' => 'User not found',
             ], 404);
         }
-
+    
         return response()->json(
             [
-                'user' => $user
+                'user' => $user,
             ],
             200
         );
     }
-
     public function otheruserPosts(string $id)
     {
         // 指定されたユーザーIDに基づいて投稿を取得
