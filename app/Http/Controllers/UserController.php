@@ -313,6 +313,7 @@ class UserController extends Controller
         return response()->json([
             'topic_id' => $topic->id,
             'topic' => $topic->topic,
+            'topic_image' => $topic->image,
             'topic_created_at' => $topic->created_at,
             'post_id' => null,
             'post_content' => null,
@@ -324,6 +325,7 @@ class UserController extends Controller
     return response()->json([
         'topic_id' => $topic->id,
         'topic' => $topic->topic,
+        'topic_image' => $topic->image,
         'topic_created_at' => $topic->created_at,
         'post_id' => $post->id,
         'post_content' => $post->post_content,
