@@ -25,7 +25,7 @@ class UserController extends Controller
         $topic = Topic::orderBy('created_at', 'desc')->first();
 
         // 最新のトピックに紐づく投稿一覧を取得
-        $posts = Post::where('topic_id', $latestTopic->id)
+        $posts = Post::where('topic_id', $topic->id)
         ->with(['user', 'reviews'])
         ->orderBy('created_at', 'desc')
         ->get();
