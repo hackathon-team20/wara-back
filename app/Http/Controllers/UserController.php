@@ -30,16 +30,16 @@ class UserController extends Controller
         ->orderBy('created_at', 'desc')
         ->get();
 
-        //各投稿に対してログインユーザーがレビューをつけているかを確認
-        $query->each(function ($query) use ($userId) {
-        $query->isReviewedByUser = $query->reviews->where('user_id', $userId)->isNotEmpty();
-        //reviewsコレクションをメモリから解放する
-        unset($query->reviews);
-    });
+        // 各投稿に対してログインユーザーがレビューをつけているかを確認
+        $posts->each(function ($post) use ($userId) {
+            $post->isReviewedByUser = $post->reviews->where('user_id', $userId)->isNotEmpty();
+            // reviewsコレクションをメモリから解放する
+            unset($post->reviews);
+        });
 
         return response()->json(
             [
-                'post' => $query,
+                'posts' => $posts,
             ],
             200
         );
